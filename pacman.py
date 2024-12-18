@@ -24,56 +24,21 @@ class Pacman(object):
         self.power_duration = 10
         self.prev_action = 100
 
-    #kopiuje pozycje węzła do pozycji pacmana
     def setPosition(self):
         self.position = self.node.position.copy()
-
-    # def update(self, dt):	
-    #     if self.direction not in self.directions:
-    #         print(f"Invalid direction: {self.direction}")
-    #         return
-    #     self.position += self.directions[self.direction]*self.speed*dt
-    #     self.prev_action = self.direction
-    #     direction = self.getValidKey()
-
-    #     if self.can_eat_ghosts:
-    #         self.power_timer -= dt
-    #         if self.power_timer <= 0:
-    #             self.can_eat_ghosts = False
-
-    #     if self.overshotTarget():
-    #         self.node = self.target
-    #         if self.node.neighbors[PORTAL] is not None:
-    #             self.node = self.node.neighbors[PORTAL]
-    #         self.target = self.getNewTarget(direction)
-    #         if self.target is not self.node:
-    #             self.direction = direction
-    #         else:
-    #             self.target = self.getNewTarget(self.direction)
-    #         if self.target is self.node:
-    #             self.direction = STOP
-    #         self.setPosition()
-    #         self.prev_action=100
-    #     else:
-    #         if self.oppositeDirection(direction):
-    #             self.reverseDirection()
-    
-    # def validDirection(self, direction):
-    #     if direction is not STOP:
-    #         if self.node.neighbors[direction] is not None:
-    #             if self.prev_action==100:
-    #                 return True
-    #             else:
-    #                 if direction == self.prev_action:
-    #                     return True
-    #                 elif direction == -1*self.prev_action:
-    #                     self.reverseDirection()
-    #                     return True
-    #     return False
-    #         
+     
     def update(self, dt):	
+        if self.direction not in self.directions:
+            print(f"Invalid direction: {self.direction}")
+            return
         self.position += self.directions[self.direction]*self.speed*dt
+        self.prev_action = self.direction
         direction = self.getValidKey()
+
+        if self.can_eat_ghosts:
+            self.power_timer -= dt
+            if self.power_timer <= 0:
+                self.can_eat_ghosts = False
 
         if self.overshotTarget():
             self.node = self.target
@@ -94,14 +59,20 @@ class Pacman(object):
     def validDirection(self, direction):
         if direction is not STOP:
             if self.node.neighbors[direction] is not None:
-                return True
+                if self.prev_action==100:
+                    return True
+                else:
+                    if direction == self.prev_action:
+                        return True
+                    elif direction == -1*self.prev_action:
+                        self.reverseDirection()
+                        return True
         return False
 
 
 
     def getNewTarget(self, direction):
         if self.validDirection(direction):
-            #print(f"New Target: {self.node.neighbors[direction].position}")
             return self.node.neighbors[direction]
         return self.node    
 
@@ -123,7 +94,6 @@ class Pacman(object):
         p = self.position.asInt()
         pygame.draw.circle(screen, self.color, p, self.radius)
 
-    #sprawdza czy pacman minął węzeł docelowy, do którego się zbliża
     def overshotTarget(self):
         if self.target is not None:
             vec1 = self.target.position - self.node.position
@@ -166,11 +136,10 @@ class Pacman(object):
 
     def collides_with_ghost(self, ghostList):
         for ghost in ghostList:
-            # Obliczanie odległości pomiędzy Pacmanem a duchem
             distance = self.position - ghost.position
-            distance_squared = distance.magnitudeSquared()  # Kwadrat odległości
-            radius_squared = (ghost.radius + self.collideRadius) ** 2  # Kwadrat promienia kolizji
+            distance_squared = distance.magnitudeSquared() 
+            radius_squared = (ghost.radius + self.collideRadius) ** 2 
 
-            if distance_squared <= radius_squared:  # Jeżeli Pacman dotknął ducha
-                return ghost  # Zwróć ducha, z którym nastąpiła kolizja
-        return None  # Jeśli nie znaleziono kolizji z duchem
+            if distance_squared <= radius_squared:
+                return ghost
+        return None 
