@@ -91,7 +91,7 @@ class GameController(object):
         for ghost in self.ghosts.ghosts_list:
             if self.check_ghost_coll(ghost):
                 if self.pacman.can_eat_ghosts:  # Sprawdzenie, czy Pacman może zjeść duszki
-                    ghost.respawn(self.pacman)  # Tylko wtedy teleportuje duszka
+                    ghost.respawn()  # Tylko wtedy teleportuje duszka
                     self.score += 200  # Dodanie punktów za zjedzenie duszka
                 else:
                     if self.pacman.life_amount != 0:
