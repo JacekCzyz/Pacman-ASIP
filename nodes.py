@@ -61,24 +61,6 @@ class NodeGroup(object):
                 elif data[row][col] not in self.pathSymbols:
                     key = None
 
-    # def connectHorizontally(self, data, xoffset=0, yoffset=0):
-    #     for row in range(data.shape[0]):
-    #         key = None
-    #         for col in range(data.shape[1]):
-    #             if data[row][col] in self.nodeSymbols:
-    #                 if key is None:
-    #                     key = self.constructKey(col + xoffset, row + yoffset)
-    #                 else:
-    #                     otherkey = self.constructKey(col + xoffset, row + yoffset)
-    #                     self.nodesST[key].neighbors[RIGHT] = self.nodesST[otherkey]
-    #                     self.nodesST[otherkey].neighbors[LEFT] = self.nodesST[key]
-    #                     self.nodesST[key].has_right_wall = True  # Dodanie ściany
-    #                     self.nodesST[otherkey].has_left_wall = True  # Dodanie ściany
-    #                     key = otherkey
-    #             elif data[row][col] not in self.pathSymbols:
-    #                 key = None
-
-
     def connectVertically(self, data, xoffset=0, yoffset=0):
         dataT = data.transpose()
         for col in list(range(dataT.shape[0])):
@@ -95,26 +77,7 @@ class NodeGroup(object):
                 elif dataT[col][row] not in self.pathSymbols:
                     key = None
 
-    # def connectVertically(self, data, xoffset=0, yoffset=0):
-    #     dataT = data.transpose()
-    #     for col in range(dataT.shape[0]):
-    #         key = None
-    #         for row in range(dataT.shape[1]):
-    #             if dataT[col][row] in self.nodeSymbols:
-    #                 if key is None:
-    #                     key = self.constructKey(col + xoffset, row + yoffset)
-    #                 else:
-    #                     otherkey = self.constructKey(col + xoffset, row + yoffset)
-    #                     self.nodesST[key].neighbors[DOWN] = self.nodesST[otherkey]
-    #                     self.nodesST[otherkey].neighbors[UP] = self.nodesST[key]
-    #                     self.nodesST[key].has_down_wall = True  # Dodanie ściany
-    #                     self.nodesST[otherkey].has_up_wall = True  # Dodanie ściany
-    #                     key = otherkey
-    #             elif dataT[col][row] not in self.pathSymbols:
-    #                 key = None
-
-
-                    
+                   
     def getNodeFromPixels(self, xpixel, ypixel):
         if (xpixel, ypixel) in self.nodesST.keys():
             return self.nodesST[(xpixel, ypixel)]

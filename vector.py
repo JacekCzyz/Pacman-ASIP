@@ -4,7 +4,6 @@ class Vector2(object):
     def __init__(self, x = 0, y = 0):
         self.x = x
         self.y = y
-        #potrzebna wartość co __eq__ przy sprawdzaniu długości wektorów
         self.thresh = 0.000001
 
     def __add__(self, other):
@@ -24,11 +23,9 @@ class Vector2(object):
             return Vector2(self.x/float(scalar), self.y/float(scalar))
         return None
 
-    #poprzedni div jest usuwany na rzecz truediv
     def __truediv__(self, scalar):
         return self.__div__(scalar)
 
-    #sprawdzenie równości dwóch wektorów
     def __eq__(self, other):
         if abs(self.x - other.x) < self.thresh:
             if abs(self.y - other.y) < self.thresh:
@@ -50,7 +47,6 @@ class Vector2(object):
     def asInt(self):
         return int(self.x), int(self.y)
 
-    #przydatne do wyświetlania długości wektora
     def __str__(self):
         return "<"+str(self.x)+", "+str(self.y)+">"
     

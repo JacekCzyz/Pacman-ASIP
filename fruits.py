@@ -15,7 +15,7 @@ class Fruits(object):
         self.position = Vector2(column*TILEWIDTH, row*TILEHEIGHT)
 
     def render(self, screen):
-        if not self.destroy:  # Change this line to check if the fruit is not destroyed
+        if not self.destroy:
             p = self.position.asInt()
             pygame.draw.circle(screen, self.color, p, self.radius)
 
