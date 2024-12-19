@@ -14,9 +14,9 @@ class Ghosts(object):
             rand_node = random.randint(0, len(nodes)-1)
             self.ghosts_list.append(Ghost(nodes[rand_node], i, random.randint(0,3)))
             
-    def update_ghosts(self, dt, pacman):
+    def update_ghosts(self, dt, game):
         for ghost in self.ghosts_list:
-            ghost.update(dt, pacman)
+            ghost.update(dt, game)
 
     def render_ghosts(self, screen):
         for ghost in self.ghosts_list:
@@ -54,8 +54,8 @@ class Ghost(object):
         self.target = self.node
         self.cur_move_index = self.ghost_move_index(pacman)
 
-    def distance_from_pac(self, pacman):
-        distance = round(((self.position.x - pacman.position.x)**2 + (self.position.y - pacman.position.y)**2)**0.5)
+    def distance_from_pac(self, game):
+        distance = round(((self.position.x - game.pacman.position.x)**2 + (self.position.y - game.pacman.position.y)**2)**0.5)
         return distance
 
     def random_move(self):
@@ -65,7 +65,7 @@ class Ghost(object):
            move_index = random.randint(0,3)
         return move_index
         
-    def BFS_first_move(self, target_node):
+    def BFS_first_move(self, target_node, game):
         queue = []
         visited = dict()
     
@@ -78,7 +78,7 @@ class Ghost(object):
             current_node = queue.pop(0)
         
             for neighbor in current_node.neighbors.values():
-                if neighbor and neighbor not in visited:
+                if neighbor and neighbor not in visited and neighbor not in game.nodes.nodesPORTAL:
                     visited[neighbor] = current_node
                 
                     if neighbor == target_node:
@@ -93,14 +93,14 @@ class Ghost(object):
 
 
 
-    def follow_pacman(self, pacman):
+    def follow_pacman(self, game):
         direction_list = [-1, 1, -2, 2]
         choice = random.randint(0,1)
         move_index = 0
         found = False
 
-        if pacman.node != self.node:
-            target_node = self.BFS_first_move(pacman.node)
+        if game.pacman.node != self.node:
+            target_node = self.BFS_first_move(game.pacman.node, game)
             for i in range(1,4):
                 if self.node.neighbors[direction_list[move_index]] != None:
                     if self.node.neighbors[direction_list[move_index]] == target_node:
@@ -116,9 +116,9 @@ class Ghost(object):
             while choice_made==False:
                 if iteration < 3:
                     if choice == 0:
-                        if self.position.x > pacman.node.position.x:
+                        if self.position.x > game.pacman.node.position.x:
                             move_index = 3
-                        elif self.position.x < pacman.node.position.x:
+                        elif self.position.x < game.pacman.node.position.x:
                             move_index = 2  
                     
                         if self.node.neighbors[direction_list[move_index]] != None:
@@ -127,9 +127,9 @@ class Ghost(object):
                             choice = 1
 
                     else:
-                        if self.position.y > pacman.node.position.y:
+                        if self.position.y > game.pacman.node.position.y:
                             move_index = 1
-                        elif self.position.y < pacman.node.position.y:
+                        elif self.position.y < game.pacman.node.position.y:
                             move_index = 0  
                     
                         if self.node.neighbors[direction_list[move_index]] != None:
@@ -144,14 +144,14 @@ class Ghost(object):
         return move_index
 
 
-    def front_pacman(self, pacman):
+    def front_pacman(self, game):
         direction_list = [-1, 1, -2, 2]
         choice = random.randint(0,1)
         move_index = 0
         found = False
         
-        if pacman.target != self.node:
-            target_node = self.BFS_first_move(pacman.target)
+        if game.pacman.target != self.node:
+            target_node = self.BFS_first_move(game.pacman.target, game)
             for i in range(1,4):
                 if self.node.neighbors[direction_list[move_index]] != None:
                     if self.node.neighbors[direction_list[move_index]] == target_node:
@@ -168,9 +168,9 @@ class Ghost(object):
             while choice_made==False:
                 if iteration < 3:
                     if choice == 0:
-                        if self.position.x > pacman.target.position.x:
+                        if self.position.x > game.pacman.target.position.x:
                             move_index = 3
-                        elif self.position.x < pacman.target.position.x:
+                        elif self.position.x < game.pacman.target.position.x:
                             move_index = 2  
                     
                         if self.node.neighbors[direction_list[move_index]] != None:
@@ -179,9 +179,9 @@ class Ghost(object):
                             choice = 1
 
                     else:
-                        if self.position.y > pacman.target.position.y:
+                        if self.position.y > game.pacman.target.position.y:
                             move_index = 1
-                        elif self.position.y < pacman.target.position.y:
+                        elif self.position.y < game.pacman.target.position.y:
                             move_index = 0  
                     
                         if self.node.neighbors[direction_list[move_index]] != None:
@@ -197,33 +197,34 @@ class Ghost(object):
                                     
             
             
-    def ghost_move_index(self, pacman):
+    def ghost_move_index(self, game):
         direction_list = [-1, 1, -2, 2]
         move_index = random.randint(0,3)
 
         if self.ghost_type == 0:
-            if self.distance_from_pac(pacman) > 400:
+            if self.distance_from_pac(game) > 400:
                 while self.node.neighbors[direction_list[move_index]] == None:
                     move_index = random.randint(0,3)
             else:
-                move_index = self.follow_pacman(pacman)
+                move_index = self.follow_pacman(game)
                 
         elif self.ghost_type == 1:
-            move_index = self.follow_pacman(pacman)
+            move_index = self.follow_pacman(game)
         elif self.ghost_type == 2: 
-            move_index = self.front_pacman(pacman)
+            move_index = self.front_pacman(game)
         else:
             move_index = self.random_move()        
         return move_index
 
-    def update(self, dt, pacman):
+    def update(self, dt, game):
         random_direction_list = [-1, 1, -2, 2]
 
         self.position += self.directions[random_direction_list[self.cur_move_index]]*self.speed*dt
         
         if self.overshotTarget():
             self.node = self.target
-            self.cur_move_index = self.ghost_move_index(pacman)
+                
+            self.cur_move_index = self.ghost_move_index(game)
             self.target = self.node.neighbors[random_direction_list[self.cur_move_index]]
             self.direction = self.directions[random_direction_list[self.cur_move_index]]
             self.setPosition()  

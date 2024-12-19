@@ -55,7 +55,7 @@ class GameController(object):
     def update(self):
         dt = self.clock.tick(30) / 1000.0
         self.pacman.update(dt)
-        self.ghosts.update_ghosts(dt, self.pacman)
+        self.ghosts.update_ghosts(dt, self)
         self.pellets.update(dt)
         if self.fruits is not None:
             self.fruits.update(dt)
