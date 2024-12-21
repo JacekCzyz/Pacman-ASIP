@@ -7,8 +7,8 @@ from nodes import NodeGroup
 from ghost import *
 from pellets import PelletGroup
 from fruits import Fruits
+import sys
 import os
-
 class GameController(object):
     def __init__(self, render_mode=True):
         pygame.init()
@@ -66,8 +66,9 @@ class GameController(object):
     def checkEvents(self):
         for event in pygame.event.get():
             if event.type == QUIT:
-                exit()
-
+                print("quitting")
+                # exit()
+                
     def check_ghost_coll(self, ghost):
         if self.pacman.position.x-self.pacman.radius/2 >= ghost.position.x-ghost.radius/2 and self.pacman.position.x-self.pacman.radius <= ghost.position.x+ghost.radius/2 or self.pacman.position.x+self.pacman.radius/2 >= ghost.position.x-ghost.radius/2 and self.pacman.position.x+self.pacman.radius/2 <= ghost.position.x+ghost.radius/2: 
             if self.pacman.position.y - self.pacman.radius/2 <= ghost.position.y + ghost.radius/2 and self.pacman.position.y - self.pacman.radius/2 >= ghost.position.y - ghost.radius/2 or self.pacman.position.y + self.pacman.radius/2 <= ghost.position.y + ghost.radius/2 and self.pacman.position.y + self.pacman.radius/2 >= ghost.position.y - ghost.radius/2:
@@ -89,7 +90,10 @@ class GameController(object):
                         self.startGame(self.pacman.life_amount - 1)
                         self.score = 0
                     else:
-                        exit()
+                        self.startGame(self.pacman.life_amount - 1)
+                        self.score = 0                        
+                        print("exiting")
+                        # exit()
         
         pellet = self.pacman.eatPellets(self.pellets.pelletList)
         if pellet:
